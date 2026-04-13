@@ -1,0 +1,59 @@
+# Dependency directories
+node_modules/
+.venv/
+venv/
+ENV/
+bin/
+obj/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Python specifically
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.tox/
+.coverage
+htmlcov/
+
+# Environment variables (Sensitive)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.local.example
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.settings/
+.classpath
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project specific
+backend-extraction/.venv/
+backend-extraction/__pycache__/
+frontend/.next/
+frontend/node_modules/
+
+# Ignore the sample invoice if you don't want it public
+Sales Invoice T-589 Dated  8-8-2025.pdf
