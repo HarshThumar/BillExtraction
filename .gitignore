@@ -54,6 +54,10 @@ backend-extraction/.venv/
 backend-extraction/__pycache__/
 frontend/.next/
 frontend/node_modules/
+frontend/.firebase/
+*.json
+!package.json
+!package-lock.json
 
 # Ignore the sample invoice if you don't want it public
 Sales Invoice T-589 Dated  8-8-2025.pdf

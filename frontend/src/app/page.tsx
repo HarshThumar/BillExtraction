@@ -10,6 +10,9 @@ export default function Home() {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
 
+  // Fallback to localhost for development, but in production this should be set in environment
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
@@ -25,19 +28,23 @@ export default function Home() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/process', {
+      // Calling Python backend directly
+      const response = await fetch(`${backendUrl}/extract`, {
         method: 'POST',
         body: formData,
       });
 
-      if (!response.ok) throw new Error('Extraction failed');
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.detail || 'Extraction failed');
+      }
       
       const data = await response.json();
       setExtractedData(data);
       setMessage('Extraction complete! Please review.');
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setMessage('Error extracting data. Please try again.');
+      setMessage(`Error: ${error.message || 'Check if backend is running'}`);
     } finally {
       setIsProcessing(false);
     }
@@ -47,13 +54,17 @@ export default function Home() {
     setIsSaving(true);
     setMessage('Saving to Google Sheet...');
     try {
-      const response = await fetch('/api/save', {
+      // Calling Python backend directly
+      const response = await fetch(`${backendUrl}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(extractedData),
       });
 
-      if (!response.ok) throw new Error('Save failed');
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.detail || 'Save failed');
+      }
       
       setMessage('Data successfully saved to Google Sheet! ✨');
       // Reset after success
@@ -62,9 +73,9 @@ export default function Home() {
         setFile(null);
         setMessage('');
       }, 3000);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setMessage('Error saving to sheet. Check your credentials.');
+      setMessage(`Error: ${error.message || 'Error saving to sheet'}`);
     } finally {
       setIsSaving(false);
     }
